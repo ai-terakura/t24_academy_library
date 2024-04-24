@@ -69,7 +69,6 @@ public class RentalManageController {
     public String add(Model model) {
         List<Account> accounts = this.accountService.findAll();
         List<Stock> stockList = this.stockService.findAll();
-        List<RentalManage> rentalManageList = this.rentalManageService.findAll();
 
         model.addAttribute("accounts", accounts);
         model.addAttribute("stockList", stockList);

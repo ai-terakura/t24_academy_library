@@ -7,6 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jp.co.metateam.library.values.RentalStatus;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -45,4 +46,32 @@ public class RentalManageDto {
     private Stock stock;
 
     private Account account;
+
+
+// 貸出ステータスチェック 
+public String validateStatus(Integer previousRentalStatus) {
+
+    if (previousRentalStatus == RentalStatus.RENT_WAIT.getValue() && this.status == RentalStatus.RETURNED.getValue()) {
+        return "貸出ステータスを「貸出待ち」から「返却済み」に編集することはできません";
+    }else if (previousRentalStatus == RentalStatus.RENTAlING.getValue() && this.status == RentalStatus.RENT_WAIT.getValue()) {
+        return "貸出ステータスを「貸出中」から「貸出待ち」に編集することはできません";
+    }else if (previousRentalStatus == RentalStatus.RENTAlING.getValue() && this.status == RentalStatus.CANCELED.getValue()) {
+        return "貸出ステータスを「貸出中」から「キャンセル」に編集することはできません";
+    }else if (previousRentalStatus == RentalStatus.RETURNED.getValue() && this.status == RentalStatus.RENT_WAIT.getValue()) {
+        return "貸出ステータスを「返却済み」から「貸出待ち」に編集することはできません";
+    }else if (previousRentalStatus == RentalStatus.RETURNED.getValue() && this.status == RentalStatus.RENTAlING.getValue()) {
+        return "貸出ステータスを「返却済み」から「貸出中」に編集することはできません";
+    }else if (previousRentalStatus == RentalStatus.RETURNED.getValue() && this.status == RentalStatus.CANCELED.getValue()) {
+        return "貸出ステータスを「返却済み」から「キャンセル」に編集することはできません";
+    }else if (previousRentalStatus == RentalStatus.CANCELED.getValue() && this.status == RentalStatus.RENT_WAIT.getValue()) {
+        return "貸出ステータスを「キャンセル」から「貸出待ち」に編集することはできません";
+    }else if (previousRentalStatus == RentalStatus.CANCELED.getValue() && this.status == RentalStatus.RENTAlING.getValue()) {
+        return "貸出ステータスを「キャンセル」から「貸出中」に編集することはできません";
+    }else if (previousRentalStatus == RentalStatus.CANCELED.getValue() && this.status == RentalStatus.RETURNED.getValue()) {
+        return "貸出ステータスを「キャンセル」から「返却済み」に編集することはできません";
+    }
+
+    return null;
+
+}
 }

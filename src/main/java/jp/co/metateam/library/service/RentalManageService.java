@@ -75,6 +75,40 @@ public class RentalManageService {
         }
     }
 
+    @Transactional 
+    public void update(Long id, RentalManageDto rentalManageDto) throws Exception {
+        try {
+            RentalManage rentalManage = findById(id);
+            if (rentalManage == null) {
+                throw new Exception("RentalManage record not found.");
+            }
+
+            Account account = this.accountRepository.findByEmployeeId(rentalManageDto.getEmployeeId()).orElse(null);
+            if (account == null) {
+                throw new Exception("Account record not found.");
+            }
+
+            Stock stock = this.stockRepository.findById(rentalManageDto.getStockId()).orElse(null);
+            if (stock == null) {
+                throw new Exception("Stock record not found.");
+            }
+
+             rentalManage.setId(rentalManageDto.getId());
+             rentalManage.setExpectedRentalOn(rentalManageDto.getExpectedRentalOn());
+             rentalManage.setExpectedReturnOn(rentalManageDto.getExpectedReturnOn());
+             rentalManage.setStatus(rentalManageDto.getStatus());
+             rentalManage.setStock(stock);
+             rentalManage.setAccount(account);
+
+             rentalManage = setRentalStatusDate(rentalManage, rentalManageDto.getStatus());
+
+            // データベースへの保存
+            this.rentalManageRepository.save(rentalManage);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
     private RentalManage setRentalStatusDate(RentalManage rentalManage, Integer status) {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         
